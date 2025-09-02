@@ -38,7 +38,7 @@ helm repo add eva-agent https://mellerikat.github.io/eva-agent/
 helm repo update
 
 # {chart version} and {app version} are same until now.
-helm install eva-agent-init eva-agent \
+helm install eva-agent-init eva-agent/eva-agent-init \
     -n {namespace} --version {chart version} \
     -f .values-{postfix you want}/eva-agent-init/values.yaml \
     -f .values-{postfix you want}/eva-agent-init/values-{platform}.yaml
@@ -93,7 +93,7 @@ helm repo add eva-agent https://mellerikat.github.io/eva-agent/
 helm repo update
 
 # {chart version} and {app version} are same until now.
-helm install eva-agent eva-agent \
+helm install eva-agent eva-agent/eva-agent \
     -n {namespace} --version {chart version} \
     -f .values-{postfix you want}/eva-agent/secret-values.yaml \
     -f .values-{postfix you want}/eva-agent/values.yaml \
