@@ -1,0 +1,4 @@
+# .release/
+**/.env*
+**/.secret-values*
+**/.values*

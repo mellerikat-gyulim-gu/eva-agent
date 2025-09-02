@@ -1,0 +1,13 @@
+nameOverride: "eva-agent-qdrant"
+fullnameOverride: ""
+
+image:
+  pullPolicy: Always
+
+persistence:
+  accessModes: ["ReadWriteOnce"]
+  size: 10Gi
+  annotations: {}
+  storageVolumeName: eva-agent-qdrant-storage
+  # storageSubPath: ""
+  storageClassName: eva-agent-sc-bs

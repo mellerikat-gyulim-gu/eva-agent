@@ -1,0 +1,11 @@
+
+ollama:
+  gpu:
+    enabled: false
+
+# wsl cannot make NFS
+persistentVolume:
+  enabled: true
+  accessModes:
+    - ReadWriteOnce
+  storageClass: "eva-agent-sc-bs"

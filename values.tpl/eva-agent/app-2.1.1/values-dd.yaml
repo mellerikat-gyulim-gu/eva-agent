@@ -1,0 +1,9 @@
+# Values for Docker Desktop eva-agent chart
+
+resources:
+  limits:
+    # cpu: 100m
+    memory: 8Gi
+  requests:
+    # cpu: 100m
+    memory: 2Gi
