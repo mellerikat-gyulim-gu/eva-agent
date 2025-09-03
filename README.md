@@ -31,7 +31,7 @@ Initializes and defines resources for eva-agent package.
 Should be installed once.
 
 ```sh
-cp -r ./values.tpl/eva-agent-init/app-{app version} .values-{postfix you want}
+cp -r values.tpl/eva-agent-init/app-{app version} .values-{postfix you want}
 
 # Modify values in .values-{postfix you want} to your environment.
 
@@ -41,14 +41,14 @@ helm repo update
 # {chart version} and {app version} are same until now.
 helm install eva-agent-init eva-agent/eva-agent-init \
     -n {namespace} --version {chart version} \
-    -f .values-{postfix you want}/eva-agent-init/values.yaml \
-    -f .values-{postfix you want}/eva-agent-init/values-{platform}.yaml
+    -f .values-{postfix you want}/values.yaml \
+    -f .values-{postfix you want}/values-{platform}.yaml
 ```
 
 ### Install dependencies - eva-agent-qdrant, eva-agent-ollama
 
 ```sh
-cp -r ./dependencies/eva-agent-qdrant/app-{app version} .values-{postfix you want}
+cp -r dependencies/eva-agent-qdrant/app-{app version} .values-{postfix you want}
 
 # Modify values in .values-{postfix you want} to your environment.
 
@@ -64,7 +64,7 @@ helm install eva-agent-qdrant $EA_PKG_QDRANT_CHART_NAME \
 ```
 
 ```sh
-cp -r ./dependencies/eva-agent-ollama/app-{app version} .values-{postfix you want}
+cp -r dependencies/eva-agent-ollama/app-{app version} .values-{postfix you want}
 
 # Modify values in .values-{postfix you want} to your environment.
 
@@ -84,7 +84,7 @@ helm install eva-agent-ollama $EA_PKG_OLLAMA_CHART_NAME \
 eva-agent is main service.
 
 ```sh
-cp -r ./values.tpl/eva-agent/app-{app version} .values-{postfix you want}
+cp -r values.tpl/eva-agent/app-{app version} .values-{postfix you want}
 
 # Modify values in .values-{postfix you want} to your environment.
 
@@ -94,7 +94,7 @@ helm repo update
 # {chart version} and {app version} are same until now.
 helm install eva-agent eva-agent/eva-agent \
     -n {namespace} --version {chart version} \
-    -f .values-{postfix you want}/eva-agent/secret-values.yaml \
-    -f .values-{postfix you want}/eva-agent/values.yaml \
-    -f .values-{postfix you want}/eva-agent/values-{platform}.yaml
+    -f .values-{postfix you want}/secret-values.yaml \
+    -f .values-{postfix you want}/values.yaml \
+    -f .values-{postfix you want}/values-{platform}.yaml
 ```
