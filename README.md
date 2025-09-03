@@ -5,7 +5,7 @@ eva agent and related helm charts
 
 - Kubernetes: >= 1.16.0-0 for CPU only
 - Kubernetes: >= 1.26.0-0 for GPU stable support (NVIDIA and AMD)
-- Namespace(`eva-agent`) and service account(`sa-eva-agent`) for eva-agent
+- Namespace(eg. `eva-agent`) and service account(eg. `sa-eva-agent`) for eva-agent
 - Storage infra for qdrant and ollama
 
 ## Dependencies
@@ -60,8 +60,7 @@ ea_pkg_qdrant_update_repo
 helm install eva-agent-qdrant $EA_PKG_QDRANT_CHART_NAME \
     -n {namespace} --version $EA_PKG_QDRANT_CHART_VER \
     -f .values-{postfix you want}/values.yaml \
-    -f .values-{postfix you want}/{patch version}/values.yaml \
-    -f .values-{postfix you want}/{patch version}/values-{platform}.yaml
+    -f .values-{postfix you want}/values-{platform}.yaml
 ```
 
 ```sh
@@ -77,8 +76,7 @@ ea_pkg_ollama_update_repo
 helm install eva-agent-ollama $EA_PKG_OLLAMA_CHART_NAME \
     -n {namespace} --version $EA_PKG_OLLAMA_CHART_VER \
     -f .values-{postfix you want}/values.yaml \
-    -f .values-{postfix you want}/{patch version}/values.yaml \
-    -f .values-{postfix you want}/{patch version}/values-{platform}.yaml
+    -f .values-{postfix you want}/values-{platform}.yaml
 ```
 
 ### Install eva-agent
