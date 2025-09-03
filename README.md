@@ -85,7 +85,7 @@ helm install eva-agent-ollama $EA_PKG_OLLAMA_CHART_NAME \
 eva-agent is main service.
 
 ```sh
-cp -r ./secrets.tpl/eva-agent/app-{app version} .values-{postfix you want}
+cp -r ./values.tpl/eva-agent/app-{app version} .values-{postfix you want}
 
 # Modify values in .values-{postfix you want} to your environment.
 
