@@ -9,8 +9,9 @@ eva agent and related helm charts
 - Storage infra for qdrant and ollama
 
 ## Dependencies
+
 | eva-agent | eva-agent-qdrant | eva-agent-ollama | eva-agent-init |
-|---|---|---|---|
+| ---- | ---- | ---- | ---- |
 | app-2.1.1 (2.1.1) | app-1.15.0 (1.15.0) | app-0.11.4 (1.15.0) | app-1.0.0 (1.0.0) |
 
 ## Installation
