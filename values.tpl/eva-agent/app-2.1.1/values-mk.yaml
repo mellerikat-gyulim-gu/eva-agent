@@ -1,4 +1,4 @@
-# Values for Docker Desktop eva-agent chart
+# Values for Minikube eva-agent chart
 
 replicaCount: 1
 
