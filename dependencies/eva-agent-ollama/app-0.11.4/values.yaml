@@ -18,7 +18,7 @@ ollama:
       # - llava
     # -- List of models to load at container startup
     run:
-      - qwen2.5vl:7b  #TEMP: for test
+      - qwen2.5vl:32b  # 2.1.1
 
 persistentVolume:
   enabled: true

@@ -1,15 +1,13 @@
-# Values for Minikube eva-agent-init chart
+# Values for k3s eva-agent-init chart
 
 storageClass:
-
   blockStorage:
-    provisioner: k8s.io/minikube-hostpath
+    provisioner: rancher.io/local-path
     parameters:
       type: local
       fsType: ext4
-
   fileSystem:
     provisioner: nfs.csi.k8s.io
     parameters:
-      server: localhost
-      share: /mnt/eva-agent
+      server: nfshostip
+      share: /share/eva-agent
