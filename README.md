@@ -12,7 +12,6 @@ eva agent and related helm charts
 
 ## Dependencies
 
-Latest first.
 | eva-agent | eva-agent-qdrant | eva-agent-ollama | eva-agent-init |
 | ---- | ---- | ---- | ---- |
 | app-2.1.1 (2.1.2) |                     |                     |                   |
