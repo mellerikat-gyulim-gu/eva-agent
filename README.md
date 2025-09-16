@@ -87,7 +87,8 @@ helm install eva-agent-ollama $EA_PKG_OLLAMA_CHART_NAME \
     -f .values-{postfix you want}/values-{platform}.yaml
 ```
 If you want to use persistence storage of AWS EBS or host-path,
-you might apply additional following values.
+you might apply additional following values template.
+
 `dependencies/eva-agent-ollama/app-{app version}/values-k3s-bs.yaml`
 
 As you can see, `nodeSelector` should be defined for PVC initialization would be provisioned dynamically.
