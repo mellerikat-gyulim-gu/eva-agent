@@ -12,10 +12,10 @@ eva agent and related helm charts
 
 ## Dependencies
 
-| eva-agent | eva-agent-qdrant | eva-agent-ollama | eva-agent-init |
+| eva-agent                        | eva-agent-qdrant    | eva-agent-ollama    | eva-agent-init    |
 | ---- | ---- | ---- | ---- |
-| app-2.1.1 (2.1.2) |                     |                     |                   |
-| app-2.1.1 (2.1.1) | app-1.15.0 (1.15.0) | app-0.11.4 (1.27.0) | app-1.0.0 (1.0.0) |
+| 2.1.2 / app-2.1.1 / img-2.1-a1.1 |                     |                     |                   |
+| 2.1.1 / app-2.1.1 / img-2.1-a1.1 | 1.15.0 / app-1.15.0 | 1.27.0 / app-0.11.4 | 1.0.0 / app-1.0.0 |
 
 ## Changes
 
@@ -86,6 +86,11 @@ helm install eva-agent-ollama $EA_PKG_OLLAMA_CHART_NAME \
     -f .values-{postfix you want}/values.yaml \
     -f .values-{postfix you want}/values-{platform}.yaml
 ```
+If you want to use persistence storage of AWS EBS or host-path,
+you might apply additional following values.
+`dependencies/eva-agent-ollama/app-{app version}/values-k3s-bs.yaml`
+
+As you can see, `nodeSelector` should be defined for PVC initialization would be provisioned dynamically.
 
 ### Install eva-agent
 
@@ -195,7 +200,7 @@ sudo mkdir -p /share/eva-agent
 sudo chown nobody:nogroup /share/eva-agent
 sudo chmod 777 /share/eva-agent
 
-echo "/share/eva-agent *(rw,async,no_subtree_check,no_root_squash)" | sudo tee -a /etc/exports
+echo "/share/eva-agent *(rw,async,no_subtree_check,no_root_squash,insecure)" | sudo tee -a /etc/exports
 
 sudo exportfs -ra
 sudo systemctl restart nfs-kernel-server
