@@ -4,10 +4,11 @@ eva agent and related helm charts
 ## Requirements
 
 - Kubernetes: >= 1.16.0-0 for CPU only
-- Kubernetes: >= 1.26.0-0 for GPU stable support (NVIDIA and AMD)
-- Namespace(eg. `eva-agent`) and service account(eg. `sa-eva-agent`) for eva-agent
+- Kubernetes: >= 1.26.0-0 for GPU stable support (NVIDIA)
+- Namespace(eg. `eva-agent`) and service account(should be `sa-eva-agent`) for eva-agent
 - Storage infra for qdrant and ollama
 - AWS ECR pull permission for eva-agent image
+- `kustomize` required - `sudo snap install kustomize` in Ubuntu
 - (On-premise) k3 and gpu setups - refer Appendix
 
 ## Dependencies
@@ -68,9 +69,12 @@ cp -r dependencies/eva-agent-qdrant/app-{app version} .values-{postfix}
 source .values-{postfix}/env.sh
 # update helm repo
 ea_pkg_qdrant_update_repo
-# install helm package
+# install helm package - kustomize required
+post_renderer_sh=.values-{postfix}/post-renderer.sh
+chmod +x $post_renderer_sh
 helm install eva-agent-qdrant $EA_PKG_QDRANT_CHART_NAME \
     -n {namespace} --version $EA_PKG_QDRANT_CHART_VER \
+    --post-renderer $post_renderer_sh \
     -f .values-{postfix}/values.yaml \
     -f .values-{postfix}/values-{platform}.yaml
 ```
@@ -101,12 +105,6 @@ As you can see, `nodeSelector` should be defined for PVC initialization would be
 
 #### Install eva-agent-vllm
 
-`kustomize` required.
-Install `kustomize` as following.
-```sh
-sudo snap install kustomize
-```
-
 ```sh
 cp -r dependencies/eva-agent-vllm/{chart version} .values-{postfix}
 
@@ -116,7 +114,7 @@ cp -r dependencies/eva-agent-vllm/{chart version} .values-{postfix}
 source .values-{postfix}/env.sh
 # update helm repo
 ea_pkg_vllm_update_repo
-# install helm package
+# install helm package - kustomize required
 post_renderer_sh=.values-{postfix}/post-renderer.sh
 chmod +x $post_renderer_sh
 helm install eva-agent-vllm $EA_PKG_VLLM_CHART_NAME \

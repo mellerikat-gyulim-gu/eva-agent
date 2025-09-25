@@ -1,0 +1,8 @@
+ollama:
+  models:
+    # -- List of models to pull at container startup
+    pull: []
+    # -- List of models to load at container startup
+    run:
+      # - qwen2.5vl:32b  # 2.1.1
+      - qwen2.5vl:3b  #TEST:

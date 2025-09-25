@@ -1,10 +1,20 @@
+routerSpec:
+  nodeSelectorTerms:
+    - matchExpressions:
+        - key: nodegroup
+          operator: In
+          values:
+            - ng-an2-eva-agent-db   #TODO: just routing, not db
+
 servingEngineSpec:
   runtimeClassName: ""
   modelSpec:
-  - name: "qwen2_5-vl-32b-awq"
+  - name: "qwen2-5-vl-32b-awq"
     modelURL: "Qwen/Qwen2.5-VL-32B-Instruct-AWQ"
     repository: "vllm/vllm-openai"
     tag: "latest"
+
+    serviceAccountName: sa-eva-agent
 
     replicaCount: 1
 

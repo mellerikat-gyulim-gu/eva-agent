@@ -1,6 +1,10 @@
 nameOverride: "eva-agent-qdrant"
 fullnameOverride: ""
 
+serviceAccount:
+  create: false
+  name: sa-eva-agent
+
 image:
   pullPolicy: Always
 
