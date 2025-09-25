@@ -12,6 +12,8 @@ eva agent and related helm charts
 
 ## Dependencies
 
+`eva-agent` depends on `eva-agent-ollama` OR `eva-agent-vllm`. So they should be installed exclusively.
+
 | eva-agent                        | eva-agent-qdrant    | eva-agent-ollama    | eva-agent-init    |
 | ---- | ---- | ---- | ---- |
 | 2.1.2 / app-2.1.1 / img-2.1-a1.1 |                     |                     |                   |
@@ -39,9 +41,9 @@ Initializes and defines resources for eva-agent package.
 Should be installed once.
 
 ```sh
-cp -r values.tpl/eva-agent-init/{chart version} .values-{postfix you want}
+cp -r values.tpl/eva-agent-init/{chart version} .values-{postfix}
 
-# Modify values in .values-{postfix you want} to your environment.
+# Modify values in .values-{postfix} to your environment.
 
 helm repo add eva-agent https://mellerikat.github.io/eva-agent/
 helm repo update
@@ -49,42 +51,46 @@ helm repo update
 # {chart version} and {app version} are same until now.
 helm install eva-agent-init eva-agent/eva-agent-init \
     -n {namespace} --version {chart version} \
-    -f .values-{postfix you want}/values.yaml \
-    -f .values-{postfix you want}/values-{platform}.yaml
+    -f .values-{postfix}/values.yaml \
+    -f .values-{postfix}/values-{platform}.yaml
 ```
 
-### Install dependencies - eva-agent-qdrant, eva-agent-ollama
+### Install dependencies
+
+#### Install eva-agent-qdrant
 
 ```sh
-cp -r dependencies/eva-agent-qdrant/app-{app version} .values-{postfix you want}
+cp -r dependencies/eva-agent-qdrant/app-{app version} .values-{postfix}
 
-# Modify values in .values-{postfix you want} to your environment.
+# Modify values in .values-{postfix} to your environment.
 
 # import env vars on helm repo
-source .values-{postfix you want}/env.sh
+source .values-{postfix}/env.sh
 # update helm repo
 ea_pkg_qdrant_update_repo
 # install helm package
 helm install eva-agent-qdrant $EA_PKG_QDRANT_CHART_NAME \
     -n {namespace} --version $EA_PKG_QDRANT_CHART_VER \
-    -f .values-{postfix you want}/values.yaml \
-    -f .values-{postfix you want}/values-{platform}.yaml
+    -f .values-{postfix}/values.yaml \
+    -f .values-{postfix}/values-{platform}.yaml
 ```
 
-```sh
-cp -r dependencies/eva-agent-ollama/app-{app version} .values-{postfix you want}
+#### Install eva-agent-ollama
 
-# Modify values in .values-{postfix you want} to your environment.
+```sh
+cp -r dependencies/eva-agent-ollama/app-{app version} .values-{postfix}
+
+# Modify values in .values-{postfix} to your environment.
 
 # import env vars on helm repo
-source .values-{postfix you want}/env.sh
+source .values-{postfix}/env.sh
 # update helm repo
 ea_pkg_ollama_update_repo
 # install helm package
 helm install eva-agent-ollama $EA_PKG_OLLAMA_CHART_NAME \
     -n {namespace} --version $EA_PKG_OLLAMA_CHART_VER \
-    -f .values-{postfix you want}/values.yaml \
-    -f .values-{postfix you want}/values-{platform}.yaml
+    -f .values-{postfix}/values.yaml \
+    -f .values-{postfix}/values-{platform}.yaml
 ```
 If you want to use persistence storage of AWS EBS or host-path,
 you might apply additional following values template.
@@ -92,6 +98,33 @@ you might apply additional following values template.
 `dependencies/eva-agent-ollama/app-{app version}/values-k3s-bs.yaml`
 
 As you can see, `nodeSelector` should be defined for PVC initialization would be provisioned dynamically.
+
+#### Install eva-agent-vllm
+
+`kustomize` required.
+Install `kustomize` as following.
+```sh
+sudo snap install kustomize
+```
+
+```sh
+cp -r dependencies/eva-agent-vllm/{chart version} .values-{postfix}
+
+# Modify values in .values-{postfix} to your environment.
+
+# import env vars on helm repo
+source .values-{postfix}/env.sh
+# update helm repo
+ea_pkg_vllm_update_repo
+# install helm package
+post_renderer_sh=.values-{postfix}/post-renderer.sh
+chmod +x $post_renderer_sh
+helm install eva-agent-vllm $EA_PKG_VLLM_CHART_NAME \
+    -n {namespace} --version $EA_PKG_VLLM_CHART_VER \
+    --post-renderer $post_renderer_sh \
+    -f .values-{postfix}/values.yaml \
+    -f .values-{postfix}/values-{platform}.yaml
+```
 
 ### Install eva-agent
 
@@ -125,9 +158,9 @@ EOF
 # $HOME/.docker/config-values.yaml should be created or updated
 ```
 ```sh
-cp -r values.tpl/eva-agent/{chart version} .values-{postfix you want}
+cp -r values.tpl/eva-agent/{chart version} .values-{postfix}
 
-# Modify values in .values-{postfix you want} to your environment.
+# Modify values in .values-{postfix} to your environment.
 
 helm repo add eva-agent https://mellerikat.github.io/eva-agent/
 helm repo update
@@ -136,9 +169,9 @@ helm repo update
 helm install eva-agent eva-agent/eva-agent \
     -n {namespace} --version {chart version} \
     -f "$HOME/.docker/config-values.yaml" \
-    -f .values-{postfix you want}/secret-values.yaml \
-    -f .values-{postfix you want}/values.yaml \
-    -f .values-{postfix you want}/values-{platform}.yaml
+    -f .values-{postfix}/secret-values.yaml \
+    -f .values-{postfix}/values.yaml \
+    -f .values-{postfix}/values-{platform}.yaml
 ```
 
 ## Appendix A. On-premise - k3s setup

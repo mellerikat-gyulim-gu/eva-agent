@@ -1,0 +1,32 @@
+servingEngineSpec:
+  runtimeClassName: ""
+  modelSpec:
+  - name: "qwen2_5-vl-32b-awq"
+    modelURL: "Qwen/Qwen2.5-VL-32B-Instruct-AWQ"
+    repository: "vllm/vllm-openai"
+    tag: "latest"
+
+    replicaCount: 1
+
+    requestCPU: 8
+    requestMemory: "10Gi"
+    requestGPU: 1
+
+    pvcStorage: "30Gi"
+    storageClass: "eva-agent-sc-fs"
+    pvcAccessMode:
+      - "ReadWriteMany"
+
+    # Custom arguments for vllm serve
+    # https://artifacthub.io/packages/helm/vllm-production-stack/vllm-stack?modal=template&template=deployment-vllm-multi.yaml
+    vllmConfig:
+      host: "0.0.0.0"
+      # port: 9149 # use default 8000
+      tensorParallelSize: 1
+      gpuMemoryUtilization: 0.6
+    nodeSelectorTerms:
+      - matchExpressions:
+          - key: nodegroup
+            operator: In
+            values:
+              - ng-an2-eva-agent-gpu
