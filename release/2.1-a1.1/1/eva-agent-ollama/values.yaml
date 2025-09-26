@@ -1,0 +1,40 @@
+nameOverride: "eva-agent-ollama"
+fullnameOverride: ""
+
+serviceAccount:
+  create: false
+  name: sa-eva-agent
+
+image:
+  pullPolicy: Always
+
+ollama:
+  port: 11434
+  gpu:
+    enabled: true
+    type: nvidia
+    number: 1
+
+  models:
+    pull: []
+    run:
+      - qwen2.5vl:32b
+
+persistentVolume:
+  enabled: true
+  accessModes:
+    - ReadWriteMany
+  annotations:
+    "helm.sh/resource-policy": keep
+  # # existingClaim: ""
+  # size: 30Gi
+  storageClass: "eva-agent-sc-fs"
+  subPath: "eva-agent-ollama"
+
+extraEnv:
+  - name: OLLAMA_KEEP_ALIVE
+    value: "-1"
+  - name: OLLAMA_MAX_LOADED_MODELS
+    value: "1"
+  - name: OLLAMA_NUM_PARALLEL
+    value: "5"

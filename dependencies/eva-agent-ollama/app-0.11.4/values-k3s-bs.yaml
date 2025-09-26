@@ -1,9 +1,0 @@
-nodeSelector:
-  beta.kubernetes.io/os: "linux"
-
-persistentVolume:
-  storageClass: "eva-agent-sc-bs"  # host-path for ollama - needs pod nodeSelector
-  accessModes:
-    - ReadWriteOnce
-  size: 30Gi
-

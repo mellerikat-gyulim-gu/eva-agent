@@ -1,0 +1,42 @@
+# eva-agent
+
+replicaCount: 1
+
+env:
+  - name: DEVICE
+    value: cpu
+  - name: FAISS_STORE_DIR
+    value: data/faiss_store
+  - name: EMBEDDING_MODEL
+    value: all-MiniLM-L6-v2
+  - name: EMBEDDING_DEVICE
+    value: cpu
+  - name: QDRANT_HOST
+    value: http://eva-agent-qdrant
+  - name: QDRANT_PORT
+    value: "6333"
+  - name: OLLAMA_BASE_URL
+    value: http://eva-agent-ollama:11434
+  - name: VLM_ENDPOINT_URL
+    value: http://eva-agent-ollama:11434
+  #TEST:
+  - name: LLM_MODEL
+    value: qwen2.5vl:7b
+  - name: VLM_MODEL
+    value: qwen2.5vl:7b
+  # - name: LLM_MODEL
+  #   value: qwen2.5vl:32b
+  # - name: VLM_MODEL
+  #   value: qwen2.5vl:32b
+  - name: OPENAI_API_TYPE
+    value: azure
+  - name: OPENAI_API_VERSION
+    value: 2025-04-01-preview
+
+resources:
+  limits:
+    # cpu: 100m
+    memory: 10Gi
+  requests:
+    # cpu: 100m
+    memory: 3Gi

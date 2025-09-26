@@ -4,28 +4,19 @@ eva agent and related helm charts
 ## Requirements
 
 - Kubernetes: >= 1.16.0-0 for CPU only
-- Kubernetes: >= 1.26.0-0 for GPU stable support (NVIDIA)
-- Namespace(eg. `eva-agent`) and service account(should be `sa-eva-agent`) for eva-agent
+- Kubernetes: >= 1.26.0-0 for GPU stable support (NVIDIA and AMD)
+- Namespace(eg. `eva-agent`) and service account(eg. `sa-eva-agent`) for eva-agent
 - Storage infra for qdrant and ollama
 - AWS ECR pull permission for eva-agent image
-- `kustomize` required - `sudo snap install kustomize` in Ubuntu
 - (On-premise) k3 and gpu setups - refer Appendix
 
 ## Dependencies
 
 `eva-agent` depends on `eva-agent-ollama` OR `eva-agent-vllm`. So they should be installed exclusively.
 
-| eva-agent                        | eva-agent-qdrant    | eva-agent-ollama    | eva-agent-init    |
-| ---- | ---- | ---- | ---- |
-| 2.1.2 / app-2.1.1 / img-2.1-a1.1 |                     |                     |                   |
-| 2.1.1 / app-2.1.1 / img-2.1-a1.1 | 1.15.0 / app-1.15.0 | 1.27.0 / app-0.11.4 | 1.0.0 / app-1.0.0 |
-
-## Changes
-
-eva-agent - 2.1.2
-- values `dockerConfig.json` added to imagePullSecret.
-
 ## Installation
+
+If you want to another release, don't forget to fork another shell to avoid any confliction among env vars.
 
 ### Clone eva-agent helm repository
 
@@ -33,8 +24,36 @@ It includes values templates in addition to charts.
 
 ```sh
 git clone https://github.com/mellerikat/eva-agent.git
-cd eva-agent
+cd eva-agent/release
 ```
+
+CAUTION: Keep your local values not related to git repository. Refer `.gitignore` to make values directory name for your environment.
+
+### Copy and modify values
+
+```sh
+mkdir -p .values-${IMG_VER}
+# eg. cp -drf 2.1-a1.1/1 .values-2.1-a1.1/1
+cp -drf ${IMG_VER}/${REV} .values-${IMG_VER}/${REV}
+```
+
+Modify values in `.values-${IMG_VER}/${REV}`
+
+### Initialize environment
+
+```sh
+cp .values-${IMG_VER}/${REV}/env.tpl .values-${IMG_VER}/${REV}/.env-${PLATFORM}
+
+# Fill up empty env vars as following
+#  EA_PLATFORM=k3s
+#  EA_VALUE_ROOT=.values-2.1-a1.1/1
+vi .values-${IMG_VER}/${REV}/.env-${PLATFORM}
+
+source .values-${IMG_VER}/${REV}/.env-${PLATFORM}
+source env_cli.sh
+```
+
+Now `ea_*` commands would run with values in `.values-${IMG_VER}/${REV}`
 
 ### Install eva-agent-init
 
@@ -42,18 +61,7 @@ Initializes and defines resources for eva-agent package.
 Should be installed once.
 
 ```sh
-cp -r values.tpl/eva-agent-init/{chart version} .values-{postfix}
-
-# Modify values in .values-{postfix} to your environment.
-
-helm repo add eva-agent https://mellerikat.github.io/eva-agent/
-helm repo update
-
-# {chart version} and {app version} are same until now.
-helm install eva-agent-init eva-agent/eva-agent-init \
-    -n {namespace} --version {chart version} \
-    -f .values-{postfix}/values.yaml \
-    -f .values-{postfix}/values-{platform}.yaml
+ea_install eva-agent-init
 ```
 
 ### Install dependencies
@@ -61,116 +69,72 @@ helm install eva-agent-init eva-agent/eva-agent-init \
 #### Install eva-agent-qdrant
 
 ```sh
-cp -r dependencies/eva-agent-qdrant/app-{app version} .values-{postfix}
-
-# Modify values in .values-{postfix} to your environment.
-
-# import env vars on helm repo
-source .values-{postfix}/env.sh
-# update helm repo
-ea_pkg_qdrant_update_repo
-# install helm package - kustomize required
-post_renderer_sh=.values-{postfix}/post-renderer.sh
-chmod +x $post_renderer_sh
-helm install eva-agent-qdrant $EA_PKG_QDRANT_CHART_NAME \
-    -n {namespace} --version $EA_PKG_QDRANT_CHART_VER \
-    --post-renderer $post_renderer_sh \
-    -f .values-{postfix}/values.yaml \
-    -f .values-{postfix}/values-{platform}.yaml
+ea_install eva-agent-qdrant
 ```
+
+qdrant uses persistent storage, so PVC and PV remains after uninstall.
+
+You should `kubectl delete` them manually if needed.
 
 #### Install eva-agent-ollama
 
 ```sh
-cp -r dependencies/eva-agent-ollama/app-{app version} .values-{postfix}
-
-# Modify values in .values-{postfix} to your environment.
-
-# import env vars on helm repo
-source .values-{postfix}/env.sh
-# update helm repo
-ea_pkg_ollama_update_repo
-# install helm package
-helm install eva-agent-ollama $EA_PKG_OLLAMA_CHART_NAME \
-    -n {namespace} --version $EA_PKG_OLLAMA_CHART_VER \
-    -f .values-{postfix}/values.yaml \
-    -f .values-{postfix}/values-{platform}.yaml
+ea_install eva-agent-ollama
 ```
-If you want to use persistence storage of AWS EBS or host-path,
-you might apply additional following values template.
+ollama uses persistent storage, so PVC and PV remains after uninstall.
 
-`dependencies/eva-agent-ollama/app-{app version}/values-k3s-bs.yaml`
+You should `kubectl delete` them manually if needed.
+
+In case of k3s,
+if you want to use persistence storage of host-path,
+you might apply overriding values as following.
+
+```sh
+ea_install eva-agent-ollama -f .values-${IMG_VER}/${REV}/eva-agent/values-k3s-bs.yaml
+```
 
 As you can see, `nodeSelector` should be defined for PVC initialization would be provisioned dynamically.
 
-#### Install eva-agent-vllm
-
-```sh
-cp -r dependencies/eva-agent-vllm/{chart version} .values-{postfix}
-
-# Modify values in .values-{postfix} to your environment.
-
-# import env vars on helm repo
-source .values-{postfix}/env.sh
-# update helm repo
-ea_pkg_vllm_update_repo
-# install helm package - kustomize required
-post_renderer_sh=.values-{postfix}/post-renderer.sh
-chmod +x $post_renderer_sh
-helm install eva-agent-vllm $EA_PKG_VLLM_CHART_NAME \
-    -n {namespace} --version $EA_PKG_VLLM_CHART_VER \
-    --post-renderer $post_renderer_sh \
-    -f .values-{postfix}/values.yaml \
-    -f .values-{postfix}/values-{platform}.yaml
-```
-
 ### Install eva-agent
 
-eva-agent is main service.
+`eva-agent` is main service.
 
-Default image repository is AWS ECR and need credential setting before install or upgrade.
-You should login AWS ECR with access key and secret key which had been provided by us.
-(Chart version >= 2.1.2)
-
-For example...
-Fill AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY up.
 ```sh
-AWS_ECR_REGION=ap-northeast-2
-AWS_ECR_HOST=339713051385.dkr.ecr.${AWS_ECR_REGION}.amazonaws.com
-export AWS_ACCESS_KEY_ID={fill up}
-export AWS_SECRET_ACCESS_KEY={fill up}
+cp .values-${IMG_VER}/${REV}/eva-agent/secret-values.yaml.tpl \
+   .values-${IMG_VER}/${REV}/eva-agent/.secret-values.yaml
 
-# needs aws CLI
+# Modify .secret-values.yaml
+vi .values-${IMG_VER}/${REV}/eva-agent/.secret-values.yaml
 
-aws ecr get-login-password \
-    --region $AWS_ECR_REGION \
-        | docker login --username AWS --password-stdin $AWS_ECR_HOST
-docker_config_file="$HOME/.docker/config.json"
-# $HOME/.docker/config.json should be created or updated
+ea_install eva-agent -f .values-${IMG_VER}/${REV}/eva-agent/.secret-values.yaml
 
-values_file="$HOME/.docker/config-values.yaml"
-cat > "$values_file" << EOF
-dockerConfig:
-  json: $(cat "$docker_config_file" | base64 -w0)
-EOF
-# $HOME/.docker/config-values.yaml should be created or updated
+# Requires AWS ECR pull permission.
+# If you had not set 'aws configure', AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY would be asked.
+# After enter them correctly, $HOME/.docker/config.json would be created or refreshed.
+# $HOME/.docker/config.json would be transformed to $HOME/.docker/config-values.yaml and it would be used to imagePullSecret for eva-agent imamge.
 ```
+
+## Other helm commands
+
+`ea_install` is matched to `helm install`.
+
+Likely, `ea_template`, `ea_upgrade` and `ea_uninstall` are available.
+
+You might check actual helm command of `COMMAND]` as following.
 ```sh
-cp -r values.tpl/eva-agent/{chart version} .values-{postfix}
-
-# Modify values in .values-{postfix} to your environment.
-
-helm repo add eva-agent https://mellerikat.github.io/eva-agent/
-helm repo update
-
-# $HOME/.docker/config-values.yaml should be refreshed before install or upgrade
-helm install eva-agent eva-agent/eva-agent \
-    -n {namespace} --version {chart version} \
-    -f "$HOME/.docker/config-values.yaml" \
-    -f .values-{postfix}/secret-values.yaml \
-    -f .values-{postfix}/values.yaml \
-    -f .values-{postfix}/values-{platform}.yaml
+$ ea_install eva-agent-init
+...
+=== install from repo chart
+COMMAND] helm install eva-agent-init eva-agent/eva-agent-init --version=1.0.0 -n eva-agent -f .values-2.1-a1.1/1/eva-agent-init/values-k3s.yaml
+NAME: eva-agent-init
+LAST DEPLOYED: Fri Sep 26 12:43:28 2025
+NAMESPACE: eva-agent
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None
 ```
+
+`ea_get_all` is `kubectl get all,pvc,pv -n $EA_NS`.
 
 ## Appendix A. On-premise - k3s setup
 

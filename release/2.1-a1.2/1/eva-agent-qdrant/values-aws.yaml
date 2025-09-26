@@ -1,0 +1,12 @@
+nodeSelector:
+  nodegroup: ng-an2-eva-agent-db
+
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: topology.kubernetes.io/zone
+              operator: In
+              values:
+                - ap-northeast-2a

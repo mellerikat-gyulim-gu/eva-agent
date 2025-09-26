@@ -1,0 +1,5 @@
+ollama:
+  models:
+    pull: []
+    run:
+      - qwen2.5vl:7b  #TEST
