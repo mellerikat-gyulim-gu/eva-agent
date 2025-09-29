@@ -1,4 +1,4 @@
 # Values for AWS eva-agent chart
 
 nodeSelector:
-  nodegroup: ng-an2-eva-agent
+  eks.amazonaws.com/nodegroup: ng-an2-eva-agent

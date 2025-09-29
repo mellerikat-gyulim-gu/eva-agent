@@ -1,2 +1,2 @@
 nodeSelector:
-  nodegroup: ng-an2-eva-agent-gpu
+  eks.amazonaws.com/nodegroup: ng-an2-eva-agent-gpu
