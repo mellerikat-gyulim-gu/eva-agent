@@ -42,6 +42,8 @@ extraEnv:
     value: "2"
   - name: OLLAMA_NUM_PARALLEL
     value: "5"
+  - name: OLLAMA_GPU_ONLY
+    value: "true"
 
 livenessProbe:
   enabled: true
