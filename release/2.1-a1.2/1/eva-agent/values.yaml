@@ -15,15 +15,10 @@ env:
     value: http://eva-agent-ollama:11434
   - name: LLM_PROVIDER
     value: ollama
-  #TODO: test
   - name: LLM_MODEL
-    value: qwen2.5vl:7b
+    value: qwen2.5vl:32b
   - name: VLM_MODEL
-    value: qwen2.5vl:7b
-  # - name: LLM_MODEL
-  #   value: qwen2.5vl:32b
-  # - name: VLM_MODEL
-  #   value: qwen2.5vl:32b
+    value: qwen2.5vl:32b
 
   # qdrant
   - name: QDRANT_HOST

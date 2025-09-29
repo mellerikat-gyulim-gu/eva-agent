@@ -7,3 +7,63 @@ resources:
   requests:
     # cpu: 100m
     memory: 3Gi
+
+env:
+  # base
+  - name: FAISS_STORE_DIR
+    value: data/faiss_store
+  - name: EMBEDDING_MODEL
+    value: all-MiniLM-L6-v2
+  - name: EMBEDDING_DEVICE
+    value: cpu
+
+  # ollama
+  - name: OLLAMA_BASE_URL
+    value: http://eva-agent-ollama:11434
+  - name: LLM_PROVIDER
+    value: ollama
+  #TODO: test
+  - name: LLM_MODEL
+    value: qwen2.5vl:7b
+  - name: VLM_MODEL
+    value: qwen2.5vl:7b
+  # - name: LLM_MODEL
+  #   value: qwen2.5vl:32b
+  # - name: VLM_MODEL
+  #   value: qwen2.5vl:32b
+
+  # qdrant
+  - name: QDRANT_HOST
+    value: http://eva-agent-qdrant
+  - name: QDRANT_PORT
+    value: "6333"
+
+  # o11y
+  # secrets: LANGFUSE_SECRET_KEY, LANGFUSE_PUBLIC_KEY, OTEL_EXPORTER_OTLP_HEADERS
+  - name: LANGSMITH_TRACING
+    value: "false"
+  - name: LANGFUSE_TRACING
+    value: "true"
+  - name: LANGFUSE_HOST
+    value: https://o11y.try-mellerikat.com
+  - name: LANGFUSE_S3_MEDIA_UPLOAD_ENABLED
+    value: "true"
+  - name: OTEL_EXPORTER_OTLP_ENDPOINT
+    value: https://o11y.try-mellerikat.com/api/public/otel
+
+  # Azure OpenAI
+  # secrets: OPENAI_API_KEY, AZURE_OPENAI_API_KEY
+  - name: OPENAI_API_TYPE
+    value: azure
+  - name: OPENAI_API_VERSION
+    value: 2025-04-01-preview
+  - name: AZURE_OPENAI_ENDPOINT
+    value: https://dev.dxengws.apim.lgedx.biz/shared-10000
+  - name: DEPLOYMENT_NAME
+    value: gpt-5-chat-2025-08-07
+
+  # Clova
+  # secrets: CLOVA_API_KEY
+
+  - name: VLM_ENDPOINT_URL
+    value: http://eva-agent-ollama:11434
