@@ -76,7 +76,22 @@ qdrant uses persistent storage, so PVC and PV remains after uninstall.
 
 You should `kubectl delete` them manually if needed.
 
-#### Install eva-agent-ollama
+#### Install inferrence engine
+
+One inferrence engine should be installed to `eva-agent` image version.
+
+##### eva-agent-vllm (eva-agent img version  >= 2.2-a2.0)
+
+```sh
+ea_install eva-agent-vllm
+```
+vllm uses persistent storage, so PVC and PV remains after uninstall.
+
+You should `kubectl delete` them manually if needed.
+
+As you can see, `nodeSelector` should be defined for PVC initialization would be provisioned dynamically.
+
+##### eva-agent-ollama (eva-agent img version < 2.2-a2.0)
 
 ```sh
 ea_install eva-agent-ollama

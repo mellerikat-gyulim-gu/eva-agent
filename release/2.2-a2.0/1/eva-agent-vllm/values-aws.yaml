@@ -18,8 +18,8 @@ servingEngineSpec:
 
     replicaCount: 1
 
-    requestCPU: 8
-    requestMemory: "32Gi"
+    requestCPU: 4
+    requestMemory: "28Gi"
     requestGPU: 1
 
     pvcStorage: "30Gi"

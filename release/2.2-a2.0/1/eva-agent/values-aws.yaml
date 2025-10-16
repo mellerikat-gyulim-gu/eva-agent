@@ -1,4 +1,6 @@
 # Values for AWS eva-agent chart
 
+replicaCount: 2
+
 nodeSelector:
   eks.amazonaws.com/nodegroup: ng-an2-eva-agent
