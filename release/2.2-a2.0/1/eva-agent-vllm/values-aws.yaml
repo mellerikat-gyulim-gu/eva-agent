@@ -32,8 +32,8 @@ servingEngineSpec:
     vllmConfig:
       host: "0.0.0.0"
       # port: 9149 # use default 8000
-      tensorParallelSize: 2
-      gpuMemoryUtilization: 0.75
+      tensorParallelSize: 1
+      gpuMemoryUtilization: 0.85
       maxModelLen: 4096
       extraArgs:
         - "--served-model-name"

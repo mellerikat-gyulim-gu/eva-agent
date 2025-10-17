@@ -1,3 +1,5 @@
+routerSpec:
+  enableRouter: false
 
 servingEngineSpec:
   runtimeClassName: ""

@@ -1,6 +1,8 @@
 image:
   tag: "2.2-a2.0"
 
+replicaCount: 2
+
 env:
   # base
   - name: FAISS_STORE_DIR
@@ -14,7 +16,8 @@ env:
 
   # vllm
   - name: VLLM_BASE_URL
-    value: http://eva-agent-vllm-router-service/v1
+    # value: http://eva-agent-vllm-router-service/v1  # If routerSpec.enableRouter is true in eva-agent-vllm
+    value: http://eva-agent-vllm-qwen2-5-vl-32b-awq-engine-service/v1
   # VLLM_API_KEY=
   - name: LLM_PROVIDER
     value: openai
